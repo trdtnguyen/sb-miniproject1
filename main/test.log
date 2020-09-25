@@ -1,0 +1,16 @@
+DB.py: Connect database
+2020-09-24 13:44:07,058  dev  INFO: Connect database
+2020-09-24 14:10:59,813  dev  INFO: Connect database
+2020-09-24 14:13:25,287  dev  INFO: Connect database
+2020-09-24 14:41:00,397  dev  INFO: Connect database
+2020-09-24 18:28:14,391  dev  INFO: Connect database
+2020-09-24 18:30:18,285  dev  INFO: Connect database
+2020-09-24 18:30:53,899  dev  INFO: Connect database
+2020-09-24 18:32:29,640  dev  INFO: Connect database
+2020-09-24 18:33:50,132  dev  INFO: Connect database
+2020-09-24 18:36:07,822  dev  INFO: Connect database
+2020-09-24 18:39:45,414  dev  INFO: Connect database
+2020-09-24 18:40:05,057  dev  INFO: Connect database
+2020-09-24 18:43:23,216  dev  INFO: Connect database
+2020-09-24 18:44:15,375  dev  INFO: Connect database
+2020-09-24 18:44:22,306  dev  INFO: Query return no results in Customer.load_data()
