@@ -1,0 +1,2 @@
+2020-09-25 08:31:31,614  dev  INFO: Connect database
+2020-09-25 08:31:31,692  dev  INFO: Query return no results in Customer.load_data()

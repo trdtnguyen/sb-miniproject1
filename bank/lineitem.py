@@ -7,16 +7,6 @@ __author__ = 'Dat Nguyen'
 
 
 class LineItem:
-    def __init__(self):
-        self.id = 0
-        self.processing_date = ''
-        self.effective_date = ''
-        self.type = ''
-        self.status = ''
-        self.amount = 0.0
-        self.description = ''
-        self.pos = ''
-
     def __init__(self, id, processing_date, effective_date, type, status, amount, description, pos):
         """ Constructor
         Args:

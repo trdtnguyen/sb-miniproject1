@@ -28,7 +28,7 @@ class Customer:
         Load data into the instance by the input id
         :param db: Database instance
         :param id: customer id
-        :return:
+        :return: 0 - data load successfully. 1 otherwise
         """
         customers = db.get_table('customers')
         conn = db.get_conn()
@@ -38,8 +38,10 @@ class Customer:
             results = conn.execute(s)
             if results.rowcount == 0:
                 logger.info('Query return no results in Customer.load_data()')
+                return 1
             elif results.rowcount > 1:
                 logger.error('Query return too many results in Customer.load_data()')
+                return 1
             else:
                 row = results.first()
                 self.id = row['cus_id']
@@ -54,22 +56,23 @@ class Customer:
                 self.phone = row['cus_phone']
                 self.email = row['cus_email']
                 self.dob = row['cus_dob']
-
+                return 0
         except DBAPIError:
             logger.error('Error Query')
+            return 1
 
     def save_data(self, db):
         """
         save data from current instance into database
         If the current data is existed in the database, update it.
         Otherwise, insert it as a new row
-        :return: None
+        :return: 0 - save data successfully. 1 - Otherwise
         """
         customers = db.get_table('customers')
         conn = db.get_conn()
         logger = db.get_logger()
         try:
-            s = select([customers]).where(customers.c.cus_id == id)
+            s = select([customers]).where(customers.c.cus_id == self.id)
             results = conn.execute(s)
             if results.rowcount == 0:
                 # Insert new row
@@ -86,6 +89,7 @@ class Customer:
                            cus_email=self.email,
                            cus_dob=self.dob)
                 conn.execute(stmt)
+                return 0
             else:
                 # Update
                 stmt = customers.update().\
@@ -99,12 +103,20 @@ class Customer:
                            cus_address_zip = self.address_zip,
                            cus_phone = self.phone,
                            cus_email = self.email,
-                           cus_dob = self.dob)
+                           cus_dob = self.dob).\
+                    where(customers.c.cus_id == self.id)
                 conn.execute(stmt)
+                return 0
         except DBAPIError:
             logger.error('Error Query')
+            return 1
 
     def delete_data(self, db):
+        """
+        Delete corresponding data with this instance in the database
+        :param db: Input db instance
+        :return: 0 if delete successfully. 1 otherwise
+        """
         customers = db.get_table('customers')
         conn = db.get_conn()
         logger = db.get_logger()
@@ -113,5 +125,7 @@ class Customer:
             stmt = customers.delete().\
                 where(customers.c.cus_id == self.id)
             conn.execute(stmt)
+            return 0
         except DBAPIError:
             logger.error('Error Query')
+            return 1

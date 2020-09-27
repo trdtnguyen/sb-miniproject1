@@ -2,6 +2,26 @@
 
 This project simulates a Banking System with Python.
 
+## Setup
+### Clone the repository
+```
+$ git clone https://github.com/trdtnguyen/sb-miniproject1.git
+$ cd sb-miniproject1
+```
+### Set `PYTHONPATH`
+Add location of the git clone directory to your `PYTHONPATH` environment variable.
+* Linux / Mac:
+
+Add the following line to your `~/.bashrc`
+```
+export PYTHONPATH=$PYTHONPATH;<path_to_git_clone>
+```
+* Windows
+Open commnand promp using `Windows + R`. Open the window to edit user environment variable by following command:
+```
+rundll32.exe sysdm.cpl,EditEnvironmentVariables
+```
+Add Add location to the clone git directory to your `PYTHONPATH` **user** environment variable 
 ## Data Model
 ### Customers
 * Customer is one of core entities in the banking system. 

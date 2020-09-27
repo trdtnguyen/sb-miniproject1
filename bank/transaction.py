@@ -4,25 +4,13 @@ Transaction class represents transaction entity in our banking system
 __version__ = '0.1'
 __author__ = 'Dat Nguyen'
 
+from sqlalchemy.exc import DBAPIError
+
 import bank.lineitem as LineItem
-import pymysql
 from sqlalchemy import insert, select, create_engine, MetaData, Table
 
 
 class Transaction(LineItem):
-    """ Default Constructor
-
-    """
-    def __init__(self):
-        self.id = 0
-        self.processing_date = ''
-        self.effective_date = ''
-        self.type = ''
-        self.status = ''
-        self.amount = 0.0
-        self.description = ''
-        self.pos = ''
-        self.acc_id = 0
 
     def __init__(self, in_id, in_processing_date, in_effective_date,
                  in_type, in_status, in_amount, in_description, in_pos, in_acc_id):
@@ -43,13 +31,30 @@ class Transaction(LineItem):
                           in_type, in_status, in_amount, in_description, in_pos)
         self.acc_id = in_acc_id
 
-    def save_to_db(self, db):
+    def insert_transaction(self, db):
         """ Insert a new row to corresponding table in database. The row are fetched from current instance properties.
         Args:
             db (DB): DB instance
         Returns:
             None
         """
-        val_lists = {}
-        stmt = insert(db.get_table("transactions"))
-
+        table = db.get_table('transactions')
+        conn = db.get_conn()
+        logger = db.get_logger()
+        try:
+            stmt = table.insert(). \
+                values(
+                    trans_processing_date=self.processing_date,
+                    trans_effective_date=self.effective_date,
+                    trans_type=self.type,
+                    trans_status=self.status,
+                    acc_id=self.acc_id,
+                    trans_amount=self.amount,
+                    trans_description=self.description,
+                    trans_pos=self.pos
+                )
+            conn.execute(stmt)
+            return 0
+        except DBAPIError:
+            logger.error('Error Query')
+            return 1

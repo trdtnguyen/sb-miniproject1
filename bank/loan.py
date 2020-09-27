@@ -32,12 +32,14 @@ class Loan:
         conn = db.get_conn()
         logger = db.get_logger()
         try:
-            s = select([table]).where(table.c.acc_id == id)
+            s = select([table]).where(table.c.loan_id == id)
             results = conn.execute(s)
             if results.rowcount == 0:
-                logger.info('Query return no results in Account.load_data()')
+                logger.info('Query return no results in Loan.load_data()')
+                return 1
             elif results.rowcount > 1:
-                logger.error('Query return too many results in Account.load_data()')
+                logger.error('Query return too many results in Loan.load_data()')
+                return 1
             else:
                 row = results.first()
                 self.id = row['loan_id']
@@ -50,9 +52,11 @@ class Loan:
                 self.type = row['loan_type']
                 self.credit_score_required = row['loan_credit_score_required']
                 self.consequence_for_not_paying = row['loan_consequence_for_not_paying']
+                return 0
 
         except DBAPIError:
             logger.error('Error Query')
+            return 1
 
     def save_data(self, db):
         """
@@ -65,7 +69,7 @@ class Loan:
         conn = db.get_conn()
         logger = db.get_logger()
         try:
-            s = select([table]).where(table.c.loan_id == id)
+            s = select([table]).where(table.c.loan_id == self.id)
             results = conn.execute(s)
             if results.rowcount == 0:
                 # Insert new row
@@ -82,6 +86,7 @@ class Loan:
                         loan_consequence_for_not_paying=self.consequence_for_not_paying
                     )
                 conn.execute(stmt)
+                return 0
             else:
                 # Update
                 stmt = table.update(). \
@@ -95,10 +100,13 @@ class Loan:
                         loan_type=self.type,
                         loan_credit_score_required=self.credit_score_required,
                         loan_consequence_for_not_paying=self.consequence_for_not_paying
-                    )
+                    ). \
+                    where(table.c.loan_id == self.id)
                 conn.execute(stmt)
+                return 0
         except DBAPIError:
             logger.error('Error Query')
+            return 1
 
     def delete_data(self, db):
         table = db.get_table('loans')
@@ -109,5 +117,7 @@ class Loan:
             stmt = table.delete().\
                 where(table.c.loan_id == self.id)
             conn.execute(stmt)
+            return 0
         except DBAPIError:
             logger.error('Error Query')
+            return 1

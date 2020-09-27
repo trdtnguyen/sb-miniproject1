@@ -37,8 +37,10 @@ class Credit:
             results = conn.execute(s)
             if results.rowcount == 0:
                 logger.info('Query return no results in Credit.load_data()')
+                return 1
             elif results.rowcount > 1:
                 logger.error('Query return too many results in Credit.load_data()')
+                return 1
             else:
                 row = results.first()
                 self.id = row['credit_id']
@@ -52,9 +54,11 @@ class Credit:
                 self.annual_fee = row['credit_annual_fee']
                 self.late_payment_fee = row['credit_late_payment_fee']
                 self.over_limit_fee = row['credit_over_limit_fee']
+                return 0
 
         except DBAPIError:
             logger.error('Error Query')
+            return 1
 
     def save_data(self, db):
         """
@@ -67,7 +71,7 @@ class Credit:
         conn = db.get_conn()
         logger = db.get_logger()
         try:
-            s = select([table]).where(table.c.credit_id == id)
+            s = select([table]).where(table.c.credit_id == self.id)
             results = conn.execute(s)
             if results.rowcount == 0:
                 # Insert new row
@@ -85,6 +89,7 @@ class Credit:
                         credit_over_limit_fee=self.over_limit_fee
                     )
                 conn.execute(stmt)
+                return 0
             else:
                 # Update
                 stmt = table.update(). \
@@ -99,10 +104,13 @@ class Credit:
                         credit_annual_fee=self.annual_fee,
                         credit_late_payment_fee=self.late_payment_fee,
                         credit_over_limit_fee=self.over_limit_fee
-                    )
+                    ). \
+                    where(table.c.credit_id == self.id)
                 conn.execute(stmt)
+                return 0
         except DBAPIError:
             logger.error('Error Query')
+            return 1
 
     def delete_data(self, db):
         table = db.get_table('credits')
@@ -113,5 +121,7 @@ class Credit:
             stmt = table.delete().\
                 where(table.c.credit_id == self.id)
             conn.execute(stmt)
+            return 0
         except DBAPIError:
             logger.error('Error Query')
+            return 1

@@ -4,6 +4,10 @@ Main
 __version__ = '0.1'
 __author__ = 'Dat Nguyen'
 
+from bank.employee import Employee
+from bank.account import Account
+from bank.credit import Credit
+from bank.loan import Loan
 from db.DB import DB
 from bank.customer import Customer
 import configparser
@@ -15,6 +19,7 @@ class Main:
 
     def _connect_db(self):
         config = configparser.ConfigParser()
+        #config.read('config.cnf')
         config.read('../config.cnf')
         # str_conn  = 'mysql+pymysql://root:12345678@localhost/bank'
         str_conn = 'mysql+pymysql://'
@@ -32,6 +37,25 @@ class Main:
 
 main = Main()
 db = main.get_db()
+#
+# cus = Customer()
+# cus.load_data(db, 1)
+# cus.save_data(db)
+#
+# emp = Employee()
+# emp.load_data(db, 1)
+# emp.save_data(db)
 
-cus = Customer()
-cus.load_data(db, 10)
+
+#
+# acc = Account()
+# acc.load_data(db, 1)
+# acc.save_data(db)
+#
+# credit = Credit()
+# credit.load_data(db, 1)
+# credit.save_data(db)
+
+loan = Loan()
+loan.load_data(db, 1)
+loan.save_data(db)

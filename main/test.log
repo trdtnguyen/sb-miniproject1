@@ -14,3 +14,28 @@ DB.py: Connect database
 2020-09-24 18:43:23,216  dev  INFO: Connect database
 2020-09-24 18:44:15,375  dev  INFO: Connect database
 2020-09-24 18:44:22,306  dev  INFO: Query return no results in Customer.load_data()
+2020-09-25 07:16:49,710  dev  INFO: Connect database
+2020-09-25 07:16:49,955  dev  INFO: Query return no results in Customer.load_data()
+2020-09-25 07:29:18,237  dev  INFO: Connect database
+2020-09-25 07:29:18,318  dev  INFO: Query return no results in Customer.load_data()
+2020-09-25 08:30:23,097  dev  INFO: Connect database
+2020-09-25 08:30:23,182  dev  INFO: Query return no results in Customer.load_data()
+2020-09-26 06:44:25,206  dev  INFO: Connect database
+2020-09-26 06:53:13,706  dev  INFO: Connect database
+2020-09-26 06:53:39,615  dev  INFO: Connect database
+2020-09-26 06:55:42,584  dev  INFO: Connect database
+2020-09-26 06:59:05,910  dev  INFO: Connect database
+2020-09-26 08:45:14,929  dev  INFO: Connect database
+2020-09-26 08:45:52,997  dev  INFO: Connect database
+2020-09-26 08:52:36,770  dev  INFO: Connect database
+2020-09-26 08:52:45,220  dev  INFO: Connect database
+2020-09-26 18:46:11,581  dev  INFO: Connect database
+2020-09-26 18:48:32,328  dev  INFO: Connect database
+2020-09-26 18:49:04,467  dev  INFO: Connect database
+2020-09-26 20:03:04,993  dev  INFO: Connect database
+2020-09-26 20:03:43,834  dev  INFO: Connect database
+2020-09-26 20:04:36,084  dev  INFO: Connect database
+2020-09-26 20:08:22,747  dev  INFO: Connect database
+2020-09-26 20:08:51,498  dev  INFO: Connect database
+2020-09-26 20:09:06,120  dev  INFO: Connect database
+2020-09-26 20:11:28,512  dev  INFO: Connect database

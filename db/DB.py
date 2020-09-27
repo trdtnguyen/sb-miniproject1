@@ -4,7 +4,6 @@ General DB class to manage database connection
 __version__ = '0.1'
 __author__ = 'Dat Nguyen'
 
-import pymysql
 from sqlalchemy import insert, select, create_engine, MetaData, Table
 import logging
 import logging.config
@@ -43,6 +42,7 @@ class DB:
             self.table_dict = {DB.TB_NAMES[i]: tb for i, tb in enumerate(self.table_list)}
         except DBAPIError as e:
             self.logger.error(f'Cannot connect to database using connection string {self.str_connection}')
+            self.connection = None
 
     def get_table(self, table_name):
         """ Return Table instance for a given table name
