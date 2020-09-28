@@ -4,7 +4,9 @@ LoanLineItem class represents loan transaction entity in our banking system
 __version__ = '0.1'
 __author__ = 'Dat Nguyen'
 
-import bank.lineitem as LineItem
+from sqlalchemy.exc import DBAPIError
+
+from bank.lineitem import LineItem
 
 
 class CreditLineItem(LineItem):
@@ -40,3 +42,31 @@ class CreditLineItem(LineItem):
         LineItem.__init__(self, in_id, in_processing_date, in_effective_date,
                           in_type, in_status, in_amount, in_description, in_pos)
         self.credit_id = in_credit_id
+
+    def insert_lineitem(self, db):
+        """ Insert a new row to corresponding table in database. The row are fetched from current instance properties.
+        Args:
+            db (DB): DB instance
+        Returns:
+            None
+        """
+        table = db.get_table('credit_line_items')
+        conn = db.get_conn()
+        logger = db.get_logger()
+        try:
+            stmt = table.insert(). \
+                values(
+                credit_id=self.credit_id,
+                cli_processing_date=self.processing_date,
+                cli_effective_date=self.effective_date,
+                cli_type=self.type,
+                cli_status=self.status,
+                cli_amount=self.amount,
+                cli_description=self.description,
+                cli_pos=self.pos
+            )
+            conn.execute(stmt)
+            return 0
+        except DBAPIError:
+            logger.error('Error Query')
+            return 1

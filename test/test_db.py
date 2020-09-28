@@ -78,7 +78,7 @@ def test_save_data_employee(db):
 def test_promote_employee(db):
     emp = Employee()
     emp.load_data(db, 1)
-    ret = emp.promote(db, 2, 100006)
+    ret = emp.promote(db, 2, 100007)
     assert ret == 0
 
 
@@ -120,15 +120,30 @@ def test_load_existed_credit(db):
     ret = credit.load_data(db, 1)
     assert ret == 0
 
+
 def test_load_notexisted_credit(db):
     credit = Credit()
     ret = credit.load_data(db, 1000)
     assert ret != 0
 
-def test_load_pay(db):
+
+def test_borrow_credit(db):
+    credit = Credit()
+    credit.load_data(db, 1)
+    credit.borrow_credit(db, '2020-10-10', 100, "Buy new phone", "Verizon store 123 st")
+
+
+def test_pay_credit(db):
+    credit = Credit()
+    credit.load_data(db, 1)
+    credit.borrow_credit(db, '2020-10-12', 100, "Pay for credit", "Internet banking")
+
+
+def test_loan_pay(db):
     loan = Loan()
     loan.load_data(db, 1)
     loan.pay_loan(db, '2020-10-10', 100, "pay loan", "123 ATM Elm street")
+
 
 def test_save_data_credit(db):
     credit = Credit()
@@ -141,6 +156,7 @@ def test_load_existed_loan(db):
     loan = Loan()
     ret = loan.load_data(db, 1)
     assert ret == 0
+
 
 def test_load_notexisted_loan(db):
     loan = Loan()

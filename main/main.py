@@ -46,9 +46,9 @@ db = main.get_db()
 # emp.load_data(db, 1)
 # emp.save_data(db)
 
-emp = Employee()
-emp.load_data(db, 1)
-emp.promote(db, 2, 100005)
+# emp = Employee()
+# emp.load_data(db, 1)
+# emp.promote(db, 2, 100005)
 
 #
 # acc = Account()
@@ -63,6 +63,11 @@ emp.promote(db, 2, 100005)
 # credit = Credit()
 # credit.load_data(db, 1)
 # credit.save_data(db)
+
+credit = Credit()
+credit.load_data(db, 1)
+credit.borrow_credit(db, '2020-10-10', 100, "Pay for new phone", "Verizon store 123 st")
+
 
 # loan = Loan()
 # loan.load_data(db, 1)

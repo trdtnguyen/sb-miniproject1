@@ -7,6 +7,8 @@ __author__ = 'Dat Nguyen'
 from sqlalchemy.exc import DBAPIError
 from sqlalchemy import Table, select, update, insert
 
+from bank.credit_lineitem import CreditLineItem
+
 
 class Credit:
     def __init__(self):
@@ -120,6 +122,100 @@ class Credit:
 
             stmt = table.delete().\
                 where(table.c.credit_id == self.id)
+            conn.execute(stmt)
+            return 0
+        except DBAPIError:
+            logger.error('Error Query')
+            return 1
+
+    def borrow_credit(self, db, processing_date, amount, description, pos):
+        """
+        Pay a loan monthly
+        :param db:
+        :param processing_date:
+        :param amount:
+        :param description:
+        :param pos:
+        :return:
+        """
+        logger = db.get_logger()
+
+        # Logical checking
+
+        if amount <= 0:
+            logger.error(f'Error invalid amount. Amount must be positive')
+            return 1
+
+        effective_date = processing_date
+
+        acc_id = self.id
+        cli = CreditLineItem(0, processing_date, effective_date, 'borrow', 'completed', amount, description, pos, acc_id)
+
+        # Step 1: Insert the new transaction reflex the withdraw
+        ret = cli.insert_lineitem(db)
+        if ret != 0:
+            # Error when inserting a new transaction
+            return ret
+
+        # Step 2: Update the corresponding row in accounts table
+
+        conn = db.get_conn()
+        credit_tb = db.get_table('credits')
+        logger = db.get_logger()
+        try:
+            stmt = credit_tb.update(). \
+                values(
+                credit_balance=self.balance + amount,
+            ). \
+                where(credit_tb.c.credit_id == self.id)
+            conn.execute(stmt)
+            return 0
+        except DBAPIError:
+            logger.error('Error Query')
+            return 1
+
+    def pay_credit(self, db, processing_date, amount, description, pos):
+        """
+        Pay a loan monthly
+        :param db:
+        :param processing_date:
+        :param amount:
+        :param description:
+        :param pos:
+        :return:
+        """
+        logger = db.get_logger()
+
+        # Logical checking
+        if amount > self.balance:
+            logger.error(f'Could not pay more than balance. Amount: {amount}, balance {self.balance}')
+            return 1
+        if amount <= 0:
+            logger.error(f'Error invalid amount. Amount must be positive')
+            return 1
+
+        effective_date = processing_date
+
+        acc_id = self.id
+        cli = CreditLineItem(0, processing_date, effective_date, 'pay', 'completed', amount, description, pos, acc_id)
+
+        # Step 1: Insert the new transaction reflex the withdraw
+        ret = cli.insert_lineitem(db)
+        if ret != 0:
+            # Error when inserting a new transaction
+            return ret
+
+        # Step 2: Update the corresponding row in accounts table
+
+        conn = db.get_conn()
+        credit_tb = db.get_table('credits')
+        logger = db.get_logger()
+        try:
+            stmt = credit_tb.update(). \
+                values(
+                credit_balance=self.balance - amount,
+            ). \
+                where(credit_tb.c.credit_id == self.id)
             conn.execute(stmt)
             return 0
         except DBAPIError:
