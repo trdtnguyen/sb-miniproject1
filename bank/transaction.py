@@ -6,7 +6,7 @@ __author__ = 'Dat Nguyen'
 
 from sqlalchemy.exc import DBAPIError
 
-import bank.lineitem as LineItem
+from bank.lineitem import LineItem
 from sqlalchemy import insert, select, create_engine, MetaData, Table
 
 

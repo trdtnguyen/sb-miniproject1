@@ -61,6 +61,7 @@ This project use `pytest` to perform unit tests.
 $ pytest test/test_db.py -v
 ```
 ## Data Model
+[ERD diagram](docs/bank_ERD.pdf)
 ### Customers
 * Customer is one of core entities in the banking system. 
 * Each Customer entity represents for a customer in real life with full of personal information.
@@ -92,3 +93,14 @@ $ pytest test/test_db.py -v
 
 ### loan_line_items
 * Similar to `credit_line_items` but for `Loans` entity.
+
+## Class Design
+[UML Diagram](docs/bank_uml.pdf)
+* `bank` includes model classes that reflex corresponding entities from the [ERD diagram](docs/bank_ERD.pdf).
+* There are three types of classes in this project
+    * ***Independent class***: reflex independent entities such as `Customer`, `Employee`, `Account`, `Credit`, and `Loan`. Those classes could presents most of operations (such as load/update data from/to database) independently. 
+    * ***Dependent class***: reflex line item entities such as: `Transaction`, `LineItem`, `CreditLineItem`, and `LoanLineItem`. Those classes are dependent on their corresponding classes and could not change the database by itself.
+    * ***Utility class***: `DB` class is a utility class that support other classes access and query the database.
+
+### Examples
+Promote 

@@ -101,6 +101,20 @@ def test_save_data_account(db):
     assert ret == 0
 
 
+def test_withdraw_account(db):
+    acc = Account()
+    acc.load_data(db, 1)
+    ret = acc.withdraw(db, '2020-10-10', 100, "pay electric bill", "123 internet")
+    assert ret == 0
+
+
+def test_deposit_account(db):
+    acc = Account()
+    acc.load_data(db, 1)
+    ret = acc.deposit(db, '2020-10-10', 120, "deposit check", "123 ATM Elm street")
+    assert ret == 0
+
+
 def test_load_existed_credit(db):
     credit = Credit()
     ret = credit.load_data(db, 1)

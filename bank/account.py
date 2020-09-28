@@ -128,12 +128,18 @@ class Account:
             logger.error('Error Query')
             return 1
 
-    def withdraw(self, db, processing_date, acc_id, amount, description, pos):
+    def withdraw(self, db, processing_date, amount, description, pos):
         logger = db.get_logger()
 
         # Logical checking
         if self.balance < amount:
             logger.error(f'Exceeding withdraw error. Balance: {self.balance}, withdraw {amount}')
+            return 1
+
+        # Note that withdrawal_limits = 0 mean unlimited withdrawal
+        if self.withdrawal_limits > 0 and self.withdrawal_limits < amount:
+            logger.error(
+                f'Exceeding withdraw limits error. Withdraw limits: {self.withdrawal_limits}, withdraw {amount}')
             return 1
 
         if amount <= 0:
@@ -152,8 +158,51 @@ class Account:
 
         # Step 2: Update the corresponding row in accounts table
 
+        conn = db.get_conn()
+        acc_tb = db.get_table('accounts')
+        logger = db.get_logger()
+        try:
+            stmt = acc_tb.update(). \
+                values(
+                acc_balance=self.balance - amount,
+            ). \
+                where(acc_tb.c.acc_id == self.id)
+            conn.execute(stmt)
+            return 0
+        except DBAPIError:
+            logger.error('Error Query')
+            return 1
+
+    def deposit(self, db, processing_date, amount, description, pos):
+        logger = db.get_logger()
+
+        if amount <= 0:
+            logger.error(f'withdraw error. Balance: {self.balance}, withdraw {amount}')
+
+        effective_date = processing_date
+
+        acc_id = self.id
+        tx = Transaction(0, processing_date, effective_date, 'deposit', 'pending', amount, description, pos, acc_id)
+
+        # Step 1: Insert the new transaction reflex the withdraw
+        ret = tx.insert_transaction(db)
+        if ret != 0:
+            # Error when inserting a new transaction
+            return ret
+
+        # Step 2: Update the corresponding row in accounts table
 
         conn = db.get_conn()
         acc_tb = db.get_table('accounts')
-
-
+        logger = db.get_logger()
+        try:
+            stmt = acc_tb.update(). \
+                values(
+                acc_balance=self.balance + amount,
+            ). \
+                where(acc_tb.c.acc_id == self.id)
+            conn.execute(stmt)
+            return 0
+        except DBAPIError:
+            logger.error('Error Query')
+            return 1

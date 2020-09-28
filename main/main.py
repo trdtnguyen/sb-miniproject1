@@ -51,11 +51,16 @@ db = main.get_db()
 # acc = Account()
 # acc.load_data(db, 1)
 # acc.save_data(db)
-#
+
+acc = Account()
+acc.load_data(db, 1)
+ret = acc.deposit(db, '2020-10-10', 100, "deposit check", "123 ATM Elm street")
+
+
 # credit = Credit()
 # credit.load_data(db, 1)
 # credit.save_data(db)
 
-loan = Loan()
-loan.load_data(db, 1)
-loan.save_data(db)
+# loan = Loan()
+# loan.load_data(db, 1)
+# loan.save_data(db)
