@@ -21,7 +21,45 @@ Open commnand promp using `Windows + R`. Open the window to edit user environmen
 ```
 rundll32.exe sysdm.cpl,EditEnvironmentVariables
 ```
-Add Add location to the clone git directory to your `PYTHONPATH` **user** environment variable 
+Add location to the clone git directory to your `PYTHONPATH` **user** environment variable
+
+### Install required Python packages
+File `requirements.txt` contains necessary Python's packages for this project.
+```
+$ pip install -r requirements.txt
+```
+### Init Database
+This project using MySQL 8.0 as the backend database.
+
+MySQL installation guide for [Windows](https://dev.mysql.com/doc/mysql-installation-excerpt/5.7/en/windows-installation.html) and [Linux](https://dev.mysql.com/doc/mysql-installation-excerpt/5.7/en/linux-installation.html). 
+
+* ***Create Database:*** Create a database named `bank`
+```
+$ mysqladmin -u root -p create bank
+```
+* ***Create tables:*** To create tables in `bank` database:
+```
+$ mysql -u root -p bank < sql/create_table.sql
+``` 
+
+* ***Insert sample data*** :
+```
+$ mysql -u root -p bank < sql/loaddata.sql
+```
+### Configuration
+Open file `config.cnf` to customize your MySQL connection
+```
+[DATABASE]
+host = localhost
+user = root
+pw = 12345678
+db_name = bank
+``` 
+## Testing
+This project use `pytest` to perform unit tests.
+```
+$ pytest test/test_db.py -v
+```
 ## Data Model
 ### Customers
 * Customer is one of core entities in the banking system. 
@@ -54,5 +92,3 @@ Add Add location to the clone git directory to your `PYTHONPATH` **user** enviro
 
 ### loan_line_items
 * Similar to `credit_line_items` but for `Loans` entity.
-
-## How to use
