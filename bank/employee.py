@@ -86,21 +86,21 @@ class Employee:
             if results.rowcount == 0:
                 # Insert new row
                 stmt = table.insert(). \
-                    values( emp_login_id=self.user_login_id,
-                            emp_login_pw=self.user_login_pw,
-                            emp_fname=self.fname,
-                            emp_lname=self.lname,
-                            emp_address_street=self.address_street,
-                            emp_address_city=self.address_city,
-                            emp_address_state=self.address_state,
-                            emp_address_zip=self.address_zip,
-                            emp_phone=self.phone,
-                            emp_email=self.email,
-                            emp_dob=self.dob,
-                            emp_started_date=self.started_date,
-                            emp_role=self.role,
-                            emp_level=self.level,
-                            emp_salary=self.salary)
+                    values(emp_login_id=self.user_login_id,
+                           emp_login_pw=self.user_login_pw,
+                           emp_fname=self.fname,
+                           emp_lname=self.lname,
+                           emp_address_street=self.address_street,
+                           emp_address_city=self.address_city,
+                           emp_address_state=self.address_state,
+                           emp_address_zip=self.address_zip,
+                           emp_phone=self.phone,
+                           emp_email=self.email,
+                           emp_dob=self.dob,
+                           emp_started_date=self.started_date,
+                           emp_role=self.role,
+                           emp_level=self.level,
+                           emp_salary=self.salary)
                 conn.execute(stmt)
                 return 0
             else:
@@ -134,7 +134,7 @@ class Employee:
         logger = db.get_logger()
         try:
 
-            stmt = table.delete().\
+            stmt = table.delete(). \
                 where(table.c.emp_id == self.id)
             conn.execute(stmt)
             return 0
@@ -152,18 +152,20 @@ class Employee:
         :return: 0 if the action is success. 1 Otherwise
         """
 
-        # We suppose that a promotion includes both increasing level and salary
-        if self.level >= new_level or self.salary >= new_salary:
-            return 1
-
         table = db.get_table('employees')
         conn = db.get_conn()
         logger = db.get_logger()
+
+        # We suppose that a promotion includes both increasing level and salary
+        if self.level > new_level or self.salary >= new_salary:
+            logger.error(
+                f"Error when promoting an employee. New salary {new_salary} must larger than current salary {self.salary}")
+            return 1
         try:
             stmt = table.update(). \
                 values(
-                       emp_level=new_level,
-                       emp_salary=new_salary). \
+                emp_level=new_level,
+                emp_salary=new_salary). \
                 where(table.c.emp_id == self.id)
             conn.execute(stmt)
             self.level = new_level

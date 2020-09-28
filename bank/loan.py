@@ -7,6 +7,8 @@ __author__ = 'Dat Nguyen'
 from sqlalchemy.exc import DBAPIError
 from sqlalchemy import Table, select, update, insert
 
+from bank.loan_lineitem import LoanLineItem
+
 
 class Loan:
     def __init__(self):
@@ -116,6 +118,55 @@ class Loan:
 
             stmt = table.delete().\
                 where(table.c.loan_id == self.id)
+            conn.execute(stmt)
+            return 0
+        except DBAPIError:
+            logger.error('Error Query')
+            return 1
+
+    def pay_loan(self, db, processing_date, amount, description, pos):
+        """
+        Pay a loan monthly
+        :param db:
+        :param processing_date:
+        :param amount:
+        :param description:
+        :param pos:
+        :return:
+        """
+        logger = db.get_logger()
+
+        # Logical checking
+        if self.remain_amount < amount:
+            logger.error(f'Error, could not pay an amount more than remain. Remain amount: {self.remain_amount}, pay {amount}')
+            return 1
+
+        if amount <= 0:
+            logger.error(f'Error invalid amount. Amount must be positive')
+            return 1
+
+        effective_date = processing_date
+
+        acc_id = self.id
+        lli = LoanLineItem(0, processing_date, effective_date, 'loanpay', 'pending', amount, description, pos, acc_id)
+
+        # Step 1: Insert the new transaction reflex the withdraw
+        ret = lli.insert_lineitem(db)
+        if ret != 0:
+            # Error when inserting a new transaction
+            return ret
+
+        # Step 2: Update the corresponding row in accounts table
+
+        conn = db.get_conn()
+        loan_tb = db.get_table('loans')
+        logger = db.get_logger()
+        try:
+            stmt = loan_tb.update(). \
+                values(
+                loan_remain_amount=self.remain_amount - amount,
+            ). \
+                where(loan_tb.c.loan_id == self.id)
             conn.execute(stmt)
             return 0
         except DBAPIError:

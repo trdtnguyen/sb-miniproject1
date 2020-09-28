@@ -137,13 +137,13 @@ class Account:
             return 1
 
         # Note that withdrawal_limits = 0 mean unlimited withdrawal
-        if self.withdrawal_limits > 0 and self.withdrawal_limits < amount:
+        if 0 < self.withdrawal_limits < amount:
             logger.error(
                 f'Exceeding withdraw limits error. Withdraw limits: {self.withdrawal_limits}, withdraw {amount}')
             return 1
 
         if amount <= 0:
-            logger.error(f'withdraw error. Balance: {self.balance}, withdraw {amount}')
+            logger.error(f'Error invalid amount. Amount must be positive')
 
         effective_date = processing_date
 
@@ -177,7 +177,8 @@ class Account:
         logger = db.get_logger()
 
         if amount <= 0:
-            logger.error(f'withdraw error. Balance: {self.balance}, withdraw {amount}')
+            logger.error(f'Error invalid amount. Amount must be positive')
+            return 1
 
         effective_date = processing_date
 

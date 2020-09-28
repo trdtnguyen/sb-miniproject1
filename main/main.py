@@ -46,15 +46,18 @@ db = main.get_db()
 # emp.load_data(db, 1)
 # emp.save_data(db)
 
+emp = Employee()
+emp.load_data(db, 1)
+emp.promote(db, 2, 100005)
 
 #
 # acc = Account()
 # acc.load_data(db, 1)
 # acc.save_data(db)
 
-acc = Account()
-acc.load_data(db, 1)
-ret = acc.deposit(db, '2020-10-10', 100, "deposit check", "123 ATM Elm street")
+# acc = Account()
+# acc.load_data(db, 1)
+# ret = acc.deposit(db, '2020-10-10', 100, "deposit check", "123 ATM Elm street")
 
 
 # credit = Credit()
@@ -64,3 +67,7 @@ ret = acc.deposit(db, '2020-10-10', 100, "deposit check", "123 ATM Elm street")
 # loan = Loan()
 # loan.load_data(db, 1)
 # loan.save_data(db)
+
+# loan = Loan()
+# loan.load_data(db, 1)
+# loan.pay_loan(db, '2020-10-10', 100, "pay loan", "123 ATM Elm street")
